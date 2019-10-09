@@ -52,21 +52,23 @@
             let row=[0,0,0];
             let col=[0,0,0];
             let diag=[0,0];
+            let tieCounter = 0;
             $(document).on("click","#gameArea .col",function(){
+                tieCounter += 1;
                 $(this).css("pointerEvents","none");
                 let i=$(this).data("i");
                 let j=$(this).data("j");
                 if(player==1){
                     $(this).text("X");
                     const result=incer(i,j,1);
-                    if(!check(result)){
+                    if(!check(result, tieCounter)){
                         $("#gameArea").css("pointerEvents","none");
                         $("#restart").css("pointerEvents","all").css("opacity","1").css("cursor","pointer");
                     }
                 }else{
                     $(this).text("0");
                     const result=incer(i,j,-1);
-                    if(!check(result)){
+                    if(!check(result, tieCounter)){
                         $("#gameArea").css("pointerEvents","none");
                         $("#restart").css("pointerEvents","all").css("opacity","1").css("cursor","pointer");
                     }
@@ -76,7 +78,7 @@
 //                console.log("diag"+diag);
                 player=(player+1)%2;
             });
-            function check(result){
+            function check(result, tieCounter){
                 const val=result%10;
                 if(result>=10&&result<20){
                     //console.log("winner "+player+" row "+val);
@@ -104,6 +106,9 @@
                         $("#11").css("color","#ff0000")
                         $("#20").css("color","#ff0000")
                     }
+                    return false;
+                } 
+                else if (tieCounter == 9){
                     return false;
                 }
                 return true;
