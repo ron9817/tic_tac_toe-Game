@@ -16,69 +16,215 @@
         <link href="https://fonts.googleapis.com/css?family=Exo&display=swap" rel="stylesheet">
         <title>Home</title>
         <style>
+            .x0Modal{
+                background-color:#80808085;
+                width: 100vw;
+                height: 100vh;
+                position: fixed;
+                z-index: 10;
+            }
+            .x0ModalBox{
+                background-color: #fff;
+/*
+                width: 25%;
+                height: 25%;
+*/
+            }
+            .x0ModalBox .heading{
+                background-color: #0000ff66;
+                color:#ffff;
+                font-weight: 700;
+            }
+            .x0ModalBox .content{
+                color: #0000ff82;
+            }
+            .x0ModalBox .content input{
+                color: #0000ff82;
+                font-weight: 700;
+            }
+            .scoreCard{
+                position: absolute;
+                top: 0;
+                right: 0;
+                transition: all 1s ease;
+            }
+            .scoreCardPlayerTitle{
+                font-weight: 700;
+                color: #ffff04;
+                background-color: #0000ff29;
+                min-width: 75px;
+                
+            }
+            .scoreCardPlayerScore{
+                font-weight: 700;
+                color: #ffff04;
+                background-color: #0000ff29;
+            }
+            h1.text-center{
+                font-size: 50px;
+                font-weight: 700;
+                color: #ff0000;
+            }
+            #history .history-text{
+                font-weight: 700;
+            }
+            #history{
+                color: #ff0000;
+                max-height: 78vh;
+                overflow-y: auto;
+            }
+            .winnerNameContainer{
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+            }
+            #winnerName{
+/*                color: #ff0000;*/
+                font-weight: 700;
+                font-size: 6em;
+                z-index: 99;
+                background: #80808085;
+            }
+            .turn{
+                color: #ff0000;
+            }
             #gameArea .col{
                 margin: 1rem;
                 background-color: #0000ff29;/*#ffff00*/
                 /* width: 14vw!important; */
-                height: 12vw;
+                height: 8rem;/*vw*/
                 color: #ffff04;
-                font-size: 100px;
+                font-size: 5em;
                 font-weight: 700;
                 cursor: pointer;
+                transition: all 1s ease;
                 /*#ff007f #ff0000 #ffff04*/
             }
             #gameArea .row{
-                width: 55vw;
+                width: 35rem;/*vw*/
                 margin: auto;
             }
             #restart{
                 height: 4rem;
                 font-size: 37px;
                 color: #ff0000;
-                background-color: #ffff04;
+                background-color: #ffff0482;
                 opacity: 0.5;
                 pointer-events: none;
                 cursor: default;
                 font-weight: 700;
+                border:none;
             }
             #restartrow{
-                width: 10rem;
+                width: 12rem;
                 margin: auto;
             }
         </style>
         <script>
+            let winner0=0;
+            let winner1=0;
             let player=0;
             let n=3;
             let row=[0,0,0];
             let col=[0,0,0];
             let diag=[0,0];
-            let tieCounter = 0;
+            let tie=0;
+            let player1Name="Player0";
+            let player2Name="Player1";
             $(document).on("click","#gameArea .col",function(){
-                tieCounter += 1;
                 $(this).css("pointerEvents","none");
                 let i=$(this).data("i");
                 let j=$(this).data("j");
-                if(player==1){
+                tie+=1;
+                if(player==0){
                     $(this).text("X");
                     const result=incer(i,j,1);
-                    if(!check(result, tieCounter)){
+                    if(!check(result)){
                         $("#gameArea").css("pointerEvents","none");
                         $("#restart").css("pointerEvents","all").css("opacity","1").css("cursor","pointer");
+                        if(result>=10&&result<40){
+                            if(player==0){
+                                winner0+=1;
+                                $("#scorePlayer0").text(winner0);
+                                $("#scorePlayer1").text(winner1);
+                                $("#winnerName").removeClass("d-none").text("Winner "+player1Name);
+                                $("#history").html($("#history").html()+"Winner "+player1Name+"<br>");
+                            }else{
+                                winner1+=1;
+                                $("#scorePlayer1").text(winner1);
+                                $("#scorePlayer0").text(winner0);
+                                $("#winnerName").removeClass("d-none").text("Winner "+player2Name);
+                                $("#history").html($("#history").html()+"Winner "+player2Name+"<br>");
+                            }
+                            if(winner0>winner1){
+                                $($(".scoreCardPlayerTitle")[0]).css("color","#ff0000");
+                                $($(".scoreCardPlayerScore")[0]).css("color","#ff0000");
+                                $($(".scoreCardPlayerTitle")[1]).css("color","#ffff04");
+                                $($(".scoreCardPlayerScore")[1]).css("color","#ffff04");
+                            }else if(winner1>winner0){
+                                $($(".scoreCardPlayerTitle")[1]).css("color","#ff0000");
+                                $($(".scoreCardPlayerScore")[1]).css("color","#ff0000");
+                                $($(".scoreCardPlayerTitle")[0]).css("color","#ffff04");
+                                $($(".scoreCardPlayerScore")[0]).css("color","#ffff04");
+                            }else{
+                                $(".scoreCardPlayerTitle").css("color","#ffff04");
+                                $(".scoreCardPlayerScore").css("color","#ffff04");                                
+                            }
+                        }else if(tie==9){
+                            $("#history").html($("#history").html()+"Draw<br>");
+                        }
                     }
                 }else{
                     $(this).text("0");
                     const result=incer(i,j,-1);
-                    if(!check(result, tieCounter)){
+                    if(!check(result)){
                         $("#gameArea").css("pointerEvents","none");
                         $("#restart").css("pointerEvents","all").css("opacity","1").css("cursor","pointer");
+                        if(result>=10&&result<40){
+                            if(player==0){
+                                winner0+=1;
+                                $("#scorePlayer0").text(winner0);
+                                $("#scorePlayer1").text(winner1);
+                                $("#winnerName").removeClass("d-none").text("Winner "+player1Name);
+                                $("#history").html($("#history").html()+"Winner "+player1Name+"<br>");
+                            }else{
+                                winner1+=1;
+                                $("#scorePlayer1").text(winner1);
+                                $("#scorePlayer0").text(winner0);
+                                $("#winnerName").removeClass("d-none").text("Winner "+player2Name);
+                                $("#history").html($("#history").html()+"Winner "+player2Name+"<br>");
+                            }
+                            if(winner0>winner1){
+                                $($(".scoreCardPlayerTitle")[0]).css("color","#ff0000");
+                                $($(".scoreCardPlayerScore")[0]).css("color","#ff0000");
+                                $($(".scoreCardPlayerTitle")[1]).css("color","#ffff04");
+                                $($(".scoreCardPlayerScore")[1]).css("color","#ffff04");
+                            }else if(winner1>winner0){
+                                $($(".scoreCardPlayerTitle")[1]).css("color","#ff0000");
+                                $($(".scoreCardPlayerScore")[1]).css("color","#ff0000");
+                                $($(".scoreCardPlayerTitle")[0]).css("color","#ffff04");
+                                $($(".scoreCardPlayerScore")[0]).css("color","#ffff04");
+                            }else{
+                                $(".scoreCardPlayerTitle").css("color","#ffff04");
+                                $(".scoreCardPlayerScore").css("color","#ffff04");                                
+                            }
+                        }else if(tie==9){
+                            $("#history").html($("#history").html()+"Draw<br>");
+                        }
                     }
                 }
 //                console.log("row"+row);
 //                console.log("col"+col);
 //                console.log("diag"+diag);
                 player=(player+1)%2;
+                if(player==0)
+                    $(".turn").text("Turn- X ("+player1Name+")");
+                else
+                    $(".turn").text("Turn- 0 ("+player2Name+")");
             });
-            function check(result, tieCounter){
+            function check(result){
                 const val=result%10;
                 if(result>=10&&result<20){
                     //console.log("winner "+player+" row "+val);
@@ -98,17 +244,16 @@
                 else if(result>=30&&result<40){
                     //console.log("winner "+player+" diag "+val);
                     if(val==0){
-                        $("#00").css("color","#ff0000")
-                        $("#11").css("color","#ff0000")
-                        $("#22").css("color","#ff0000")
+                        $("#00").css("color","#ff0000");
+                        $("#11").css("color","#ff0000");
+                        $("#22").css("color","#ff0000");
                     }else if(val==1){
-                        $("#02").css("color","#ff0000")
-                        $("#11").css("color","#ff0000")
-                        $("#20").css("color","#ff0000")
+                        $("#02").css("color","#ff0000");
+                        $("#11").css("color","#ff0000");
+                        $("#20").css("color","#ff0000");
                     }
                     return false;
-                } 
-                else if (tieCounter == 9){
+                }else if(tie==9){
                     return false;
                 }
                 return true;
@@ -142,11 +287,114 @@
                 return 0;                
             }
             $(document).on("click","#restart",function(){
-                location.reload();
-            })
+                //location.reload();
+                player=0;
+                n=3;
+                row=[0,0,0];
+                col=[0,0,0];
+                diag=[0,0];
+                tie=0;
+                for(i=0;i<3;i++){
+                    for(j=0;j<3;j++){
+                        $("#"+i+j).text("").css("pointerEvents","inherit").css("color","#ffff04");
+                    }
+                }
+                const tempName=player1Name;
+                player1Name=player2Name;
+                player2Name=tempName;
+                const tempwinner=winner0;
+                winner0=winner1;
+                winner1=tempwinner;
+                $("#gameArea").css("pointerEvents","all");
+                $("#restart").css("pointerEvents","none").css("opacity","0.5").css("cursor","default");
+                $("#winnerName").addClass("d-none").text("");
+                
+                $(".turn").text("Turn- X ("+player1Name+")");
+                $($(".scoreCardPlayerTitle")[0]).text(player1Name);
+                $($(".scoreCardPlayerTitle")[1]).text(player2Name);
+                $("#scorePlayer0").text(winner0);
+                $("#scorePlayer1").text(winner1);
+                
+                if(winner0>winner1){
+                    $($(".scoreCardPlayerTitle")[0]).css("color","#ff0000");
+                    $($(".scoreCardPlayerScore")[0]).css("color","#ff0000");
+                    $($(".scoreCardPlayerTitle")[1]).css("color","#ffff04");
+                    $($(".scoreCardPlayerScore")[1]).css("color","#ffff04");
+                }else if(winner1>winner0){
+                    $($(".scoreCardPlayerTitle")[1]).css("color","#ff0000");
+                    $($(".scoreCardPlayerScore")[1]).css("color","#ff0000");
+                    $($(".scoreCardPlayerTitle")[0]).css("color","#ffff04");
+                    $($(".scoreCardPlayerScore")[0]).css("color","#ffff04");
+                }else{
+                    $(".scoreCardPlayerTitle").css("color","#ffff04");
+                    $(".scoreCardPlayerScore").css("color","#ffff04");                                
+                }
+                
+            });
+            $(document).on("click","#start",function(){
+                if($("#player1").val()!="")
+                    player1Name=$("#player1").val();
+                if($("#player2").val()!="")
+                    player2Name=$("#player2").val();
+                $(".x0Modal").removeClass("d-flex").addClass("d-none");
+                $(".turn").text("Turn- X ("+player1Name+")");
+                $($(".scoreCardPlayerTitle")[0]).text(player1Name);
+                $($(".scoreCardPlayerTitle")[1]).text(player2Name);
+                
+            });
+            $(document).on("click",".x0Modal",function(){
+                $(".x0Modal").removeClass("d-flex").addClass("d-none");
+                $(".turn").text("Turn- X ("+player1Name+")");
+                $($(".scoreCardPlayerTitle")[0]).text(player1Name);
+                $($(".scoreCardPlayerTitle")[1]).text(player2Name);
+                
+            });
+            $(document).on("click",".x0ModalBox",function(){
+                return false; 
+            });
         </script>
     </head>
     <body>
+    
+    <div class="x0Modal d-flex">
+        <div class="x0ModalBox p-3 m-auto">
+            <div class="heading p-1">
+                   Enter player details:-
+            </div>
+            <div class="my-3 content">
+                    <form action="">
+                       <div class="form-group">
+                           <label for="player1">Player 1 Name:-</label>
+                           <input type="text" id="player1" class="form-control">
+                       </div>
+                        <div class="form-group">
+                           <label for="player2">Player 2 Name:-</label>
+                           <input type="text" id="player2" class="form-control">
+                       </div>
+                    </form>
+            </div>
+            <button id="start" class="btn btn-primary" style="background-color: #0000ff8f;">Start</button>
+        </div>
+    </div>
+    
+    <div class="scoreCard m-5">
+        <div class="row mb-1">
+            <div class="col text-center mx-2 scoreCardPlayerTitle">Player0</div>
+            <div class="col text-center mx-2 scoreCardPlayerTitle">Player1</div>
+        </div>
+        <div class="row">
+            <div class="col text-center mx-2 scoreCardPlayerScore" id="scorePlayer0">0</div>
+            <div class="col text-center mx-2 scoreCardPlayerScore" id="scorePlayer1">0</div>
+        </div>
+        <div class="mt-1 border p-2" id="history">
+            <div class="history-text">History</div>
+        </div>        
+    </div>
+    <div class="d-flex winnerNameContainer">
+        <div class="p-2 d-none m-auto text-white" id="winnerName"></div>
+    </div>
+    <h1 class="text-center">Tic Tac Toe</h1>
+    <div class="text-center turn">Turn- X</div>
     <div id="gameArea">
         <div class="row">
             <div class="col text-center" data-i=0 data-j=0 id="00"></div>
@@ -165,10 +413,10 @@
         </div>
     </div>
     <div class="row" id="restartrow">
-        <button class="col text-center" id="restart">Restart</button>
+        <button class="col text-center btn btn-primary" id="restart">Rematch</button>
     </div>
     
-    
+
     
     
 <!-- Optional JavaScript -->
